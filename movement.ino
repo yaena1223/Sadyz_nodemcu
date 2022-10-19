@@ -3,8 +3,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
-const char* ssid = "*******";
-const char* password = "*******";
+const char* ssid = "**********";
+const char* password = "**********";
 
 //초음파 센서 
 const int trigPin = 12; //D5
@@ -16,14 +16,13 @@ WiFiClient client;
 
 //thinkspeak
 const char* server = "api.thingspeak.com";
-String apiKey = "*******";
+String apiKey = "**********";
 
 //날짜 시간
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP,"pool.ntp.org",32400,3600000);
 
-//POST url
-const char* serverName = "http://localhost:8080/api/clients/time/1/";
+
 void setup() {
   Serial.begin(115200);
   Serial.println();
@@ -162,11 +161,16 @@ void thinkspeak(int distance){
 }
 
 void send_server(String data){
+  
   HTTPClient http;
-  http.begin(client,serverName);
+  //POST url
+  http.begin(client,"http://192.168.0.36:8080/api/dashboard/clients/time/1/");
+
   http.addHeader("Content-Type", "application/json");
-  int httpResponseCode = http.POST(data);
+  Serial.println(data);
+  int httpResponseCode = http.PUT(data);
   Serial.print("HTTP Response code: ");
   Serial.println(httpResponseCode);
+
   http.end();
 }
